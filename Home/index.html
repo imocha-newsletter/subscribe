@@ -1,0 +1,181 @@
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title></title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="/Content/style.css" rel="stylesheet" />
+<link href="/Content/media.css" rel="stylesheet" />
+<link href="/Content/scss/login.css" rel="stylesheet" />
+<script src="https://use.fontawesome.com/c2c16bb6bb.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<link rel="shortcut icon" type="image/x-icon" href="/Content/images/imocha-logo/imocha-favicon.png" />
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</head>
+<body>
+<div class="container-fluid">
+<div class="row full-height-block">
+<div class="col-md-5 align-self-center">
+<div class="row justify-content-center">
+<div class="col-md-10">
+<div class="col-md-12">
+<img src="/Content/images/login/imocha-logo.png" class="img-center mb-2" />
+</div>
+<div class="widget login-widget">
+<h2 class="col-md-12 mb-1 mt-2">Login</h2>
+<div id="formContainer">
+<form id="frmSignup" action="/Home/Login" method="post">
+<div class="col-md-12 mb-2">
+<label>
+Email Address<span>*</span>
+</label>
+<input type="email" class="select-common " data-error="EmailId" id="EmailId" value name="EmailId" pattern="^[_a-zA-Z0-9-+]+(\.[_a-zA-Z0-9-+]+)*@[a-zA-Z0-9\-]+(\.[a-zA-Z0-9]+)*(\.[a-zA-Z]{2,7})$" autofocus placeholder="Enter Email Address" required>
+<p id="errorEmailId" class="error-msg"></p>
+</div>
+<div class="col-md-12 mb-2">
+<p id="serverError" class="error-message mb-0-5">
+</p>
+<input type="submit" id="frmSubmitBtn" class="btn btn-primary-imocha full-width mb-0-5" value="Continue" />
+<div id="frmLoading" style="display:none; text-align: center">
+<img style="width: auto; height: 30px; margin: 0 auto" src="/Content/images/loading-small.gif" />
+</div>
+</div>
+</form>
+</div>
+</div>
+<div class="col-md-12" style="display: block">
+<a href="/Home/Google" class="google-sign-in-block">
+<img src="/Content/images/login/google-sign-in.png" class="google-sign-in" />
+</a>
+</div>
+</div>
+</div>
+</div>
+<div class="col-md-7 align-self-center" style="display: block">
+<div class="row justify-content-center">
+<div class="col-md-10">
+<div class="slideshow-container">
+<div id="imCarousel" class="carousel slide " data-ride="carousel">
+<div class="carousel-inner">
+<div class="carousel-item active">
+<a href="https://www.imocha.io/platform/video-proctoring" target="_blank">
+<img src="/Content/images/login/web1.png" class="login-img mb-1" style="height:247px; width:60%;" alt="video proctoring" />
+</a>
+<h2 class="mb-1 ff-PoppinsMedium">With iMocha's <span class="ff-PoppinsSemiBold">AI- based </span>cheating prevention and fraud detection software, you can make smarter hiring decisions and start building winning teams today!</h2>
+<div>
+<a class="btn btn-secondary-imocha" href="https://www.imocha.io/platform/video-proctoring" target="_blank">Read More</a>
+</div>
+</div>
+
+
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+        $(document).ready(function () { $('iframe').remove(); });
+    </script>
+<script>
+
+        var serverSideError = $('#serverError');
+
+        $(function () {
+
+            $("#frmSignup").submit(function (event) {
+                event.preventDefault();
+                var actionUrl = $(this).attr("action");
+                var formData = new FormData(this);
+
+                $("#frmSubmitBtn").hide();
+                $("#frmLoading").show();
+
+                $.ajax({
+                    type: "POST",
+                    url: actionUrl,
+                    data: formData,
+                    contentType: false, // Required for FormData
+                    processData: false, // Required for FormData
+                    success: function (response) {
+                        if (!response.Success) {
+                            serverSideError.html(`<span style="color:red">${response.Error ? response.Error : "Oops! There was an issue signing in. Please try again."}</span >`);
+                            $("#frmSubmitBtn").show();
+                            $("#frmLoading").hide();
+                        } else if (response.SSOLogin) {
+                            window.location = response.SSOUrl;
+                        } else {
+                            $("#formContainer").html(response.View);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                        serverSideError.html(`<span style="color:red"> Oops! There was an issue signing in. Please try again.</span >`)
+                        $("#frmSubmitBtn").show();
+                        $("#frmLoading").hide();
+                    }
+                });
+            });
+
+            if ('0' == '9') {
+
+                $('#SessionEndPopup').modal('show');
+
+           }
+
+            $('input[type=password]').on('invalid change', function (e) {
+
+                e.preventDefault();
+                if (this.validity.tooShort) {
+                    $('#error' + this.id).html('Password should be minimum 6 characters');
+                    $('#' + this.id).addClass('error-border');
+                    serverSideError.html('');
+                }
+                else if (this.validity.valueMissing) {
+                    $('#error' + this.id).html('Password cannot be blank');
+                    $('#' + this.id).addClass('error-border');
+                    serverSideError.html('');
+                }
+                else {
+                    $('#error' + this.id).html('');
+                    $('#' + this.id).removeClass('error-border');
+                }
+
+            });
+
+            $('input[type=email]').on('invalid change', function (e) {
+
+                e.preventDefault();
+                if (this.validity.valueMissing) {
+                    $('#error' + this.id).html('Email Address cannot be blank');
+                    $('#' + this.id).addClass('error-border');
+                    serverSideError.html('');
+                }
+                else if (this.validity.typeMismatch) {
+                    $('#error' + this.id).html('Please enter a valid email address');
+                    $('#' + this.id).addClass('error-border');
+                    serverSideError.html('');
+                }
+                else if (this.validity.patternMismatch) {
+                    $('#error' + this.id).html('Please enter a valid email address');
+                    $('#' + this.id).addClass('error-border');
+                    serverSideError.html('');
+                }
+                else {
+                    $('#error' + this.id).html('');
+                    $('#' + this.id).removeClass('error-border');
+                }
+
+            });
+        });
+    </script>
+</body>
+</html>
